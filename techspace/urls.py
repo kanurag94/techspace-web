@@ -13,7 +13,8 @@ from .forms import EmailValidationOnForgotPassword
 
 from techspace.sitemaps import PostSitemap, StaticViewSitemap
 from blog import views as blog_views
-from base import views as base_views
+from . import views as base_views
+
 sitemaps={
 	'posts':PostSitemap,
 	'static':StaticViewSitemap
@@ -23,6 +24,8 @@ urlpatterns = [
 	url(r'^sitemap.xml', sitemap, {'sitemaps':sitemaps}),
 	url(r'^posts/<int:id>', blog_views.post, name='post'),
 	url(r'^about/<int:id>', base_views.about, name='about'),
+    url(r'^alumni/', base_views.alumni, name='alumni'),
+
     url(r'^admin/', admin.site.urls),
     url(r'^codeschool/', include('codeschool.urls')),
     url(r'^cogitans/', include('cogitans.urls')),

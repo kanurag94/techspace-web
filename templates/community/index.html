@@ -50,11 +50,11 @@
                     <h6 class="blog-date">{{ blog.date }} by <a href="{% url 'log:dashboard' name=blog.author %}">{{ blog.author }}</a></h6>
                     {% if blog.isblog %}
                     <div class="col-xs-10 col-md-10">
-                      <p>{{ blog.description|truncatewords:100 }}<a href="{% url 'blog:blog-detail' blog.slug %}">(more...)</a></p>
+                      <p>{{ blog.description|urlize|truncatewords:50|linebreaks }}<a href="{% url 'blog:blog-detail' blog.slug %}" class="small"><br>(Read full blog)</a></p>
                     </div>
                     {% else %}
                     <div class="col-xs-10 col-md-10">
-                      <p>{{ blog.content|safe|truncatewords:100 }}<a href="{% url 'blog:post-detail' blog.slug %}" class="small-p">(more...)</a></p>
+                      <p>{{ blog.content|safe|urlize|truncatewords:50|linebreaks }}<a href="{% url 'blog:post-detail' blog.slug %}" class="small-p"><br>(Read full post)</a></p>
                     </div>
                     {% endif %}
                     {% if blog.image.url is not None %}
@@ -75,7 +75,6 @@
                                   <button type="submit" class="post-actions-button small-p"><i class="fa fa-thumbs-up"></i> Upvote ({{ blog.upvotes }})</button> |
                               {% endif %}
                       </form> -->
-
                       <form class="form-horizontal upvote-form" id="{{ blog.id }}" action="{% url 'community:toggle-upvote'%}" method="post">
                           <input type="hidden" value="{{ blog.id }}" name="id">
                           {% csrf_token %}
@@ -130,11 +129,11 @@
 
                     {% if blog.isblog %}
                     <div class="col-xs-10 col-md-10">
-                      <p>{{ blog.description|truncatewords:100 }}<a href="{% url 'blog:blog-detail' blog.slug %}">  (more...)</a></p>
+                      <p>{{ blog.description|truncatewords:100|urlize }}<a href="{% url 'blog:blog-detail' blog.slug %}"><br>(Read full blog)</a></p>
                     </div>
                     {% else %}
                     <div class="col-xs-10 col-md-10">
-                      <p>{{ blog.content|safe|truncatewords:100 }}<a href="{% url 'blog:post-detail' blog.slug %}">  (more...)</a></p>
+                      <p>{{ blog.content|safe|urlize|truncatewords:100 }}<a href="{% url 'blog:post-detail' blog.slug %}"><br>(Read full post)</a></p>
                     </div>
                     {% endif %}
                     {% if blog.image.url is not None %}
@@ -155,13 +154,13 @@
                                   <button type="submit" class="post-actions-button small-p"><i class="fa fa-thumbs-up"></i> Upvote ({{ blog.upvotes }})</button> |
                               {% endif %}
                       </form> -->
-
                       <form class="form-horizontal upvote-form" id="{{ blog.id }}" action="{% url 'community:toggle-upvote'%}" method="post">
                           <input type="hidden" value="{{ blog.id }}" name="id">
                           {% csrf_token %}
                           <input type="hidden" id="state-{{blog.id}}" value="{{ blog.state }}" name="state">
                           <button type="submit" id="btn-{{ blog.id }}" class="post-actions-button small-p {%if blog.state == 1%}upvoted{%else%}{%endif%}"><i class="fa fa-thumbs-up"></i> ({{ blog.upvotes }}){%if blog_detail.state == 1%} Upvoted{% else %} Upvote{% endif %}</button> |
                       </form>
+
                       {% if blog.isblog %}<a href="{% url 'blog:blog-detail' blog.slug %}" class="small-p">{% else %}
                         <a href="{% url 'blog:post-detail' blog.slug %}" class="small-p">
                         {% endif %}{{ blog.no_of_comments }} comments</a>
@@ -297,7 +296,11 @@
       var thisId = $form.attr( "id" );
       $.post(url, $form.serialize())
           .done(function(data) {
-              changeButton(data, thisId);
+              if(data.user === "none"){
+                window.location = '/login/';
+              } else {
+                changeButton(data, thisId);
+              }
           });
   });
 

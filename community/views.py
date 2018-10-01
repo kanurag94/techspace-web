@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
 from blog.models import BlogPost, Upvote
-from event.models import Events
+from event.models import Event
 from latest.models import Latestpost
 
 from log.models import UserProfile, Notification
@@ -20,7 +20,7 @@ from itertools import chain
 #     context_object_name = 'blogs'
 #
 # class EventListView(ListView):
-#     model = Events
+#     model = Event
 #     template_name = 'community/index.html'
 #     context_object_name = 'events'
 
@@ -28,7 +28,7 @@ def contentForCommunity(request):
 
     all_blogs = BlogPost.objects.filter(pinned = False)
     pinned_blogs = BlogPost.objects.filter(pinned = True)
-    events = Events.objects.all()
+    events = Event.objects.all()
     latest_posts = Latestpost.objects.all()
     upvotes = Upvote.objects.all()
 
@@ -55,10 +55,11 @@ def contentForCommunity(request):
 
     return render(request, 'community/index.html', {'blogs':blogs, 'pinned_blogs':pinned_blogs, 'events':events , 'latest_posts' : latest_posts})
 
-@login_required
 def toggleUpvote(request) :
 
     if (request.method == "POST") :
+        if(not request.user.is_authenticated):
+            return JsonResponse({ 'user': 'none' });
 
         blog_id = request.POST['id']
         blog_state = int(request.POST['state'])

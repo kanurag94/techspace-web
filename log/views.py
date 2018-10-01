@@ -22,6 +22,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
+from datetime import datetime
+
 
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView, UpdateView
@@ -29,7 +31,7 @@ from django.views.generic.edit import DeleteView, UpdateView
 from .forms import UserForm, UserProfileForm, UserProfileEditForm, UserReportForm, MessageForm#, EventAddForm#, InfoAddForm, TeamAddForm
 # from home.models import Contact, Info, Team
 
-from event.models import Events
+# from event.models import Event
 from .models import UserProfile, Report, Message, Notification
 from blog.models import BlogPost, Comments, Upvote
 
@@ -140,13 +142,18 @@ def user_login(request):
 		if user:
 			if user.is_active:
 				login(request, user)
+				profile = UserProfile.objects.get(user=user)
+				profile.last_login_time = datetime.now()
+				profile.ip_address = request.META.get('REMOTE_ADDR')
+				profile.user_agent = request.META.get('HTTP_USER_AGENT')
+				profile.save()
 
 				if 'next' in request.POST:
 					return redirect(request.POST.get('next'))
 				else:
 					return HttpResponseRedirect(reverse('community:index'))
 			else:
-				messages.warning(request, "Account is active.")
+				messages.warning(request, "Account is inactive.")
 				return HttpResponseRedirect(reverse("login"))
 		else:
 			print("someone tried to login with wrong credentials")

@@ -35,6 +35,16 @@ GOOGLE_RECAPTCHA_SECRET_KEY = '6Lft7WkUAAAAAEf37JPg6O62HV3QXXz3qR1kYF0H'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+
+# To be used only if ssl certificate is active
+# Don't use while running local server
+
+#SESSION_COOKIE_SECURE = True
+#CSRF_COOKIE_SECURE = True
+
 ALLOWED_HOSTS = []
 
 
@@ -47,8 +57,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sitemaps'
-    'django.contrib.sites,
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
     'home',
     'codeschool',
     'cogitans',
@@ -109,23 +119,14 @@ WSGI_APPLICATION = 'techspace.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-}"""
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'techspace',
-        'USER': 'root',
-        'PASSWORD': 'root1234'
-    }
 }
 
-SILENCED_SYSTEM_CHECKS = ['mysql.E001']
+# SILENCED_SYSTEM_CHECKS = ['mysql.E001']
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

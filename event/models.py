@@ -3,7 +3,7 @@ from django.template.defaultfilters import slugify
 
 # Create your models here.
 
-class Events(models.Model):
+class Event(models.Model):
 	title = models.CharField(max_length=255)
 	author = models.CharField(max_length=255)
 	date = models.DateTimeField(auto_now_add=True)
@@ -43,7 +43,7 @@ class Events(models.Model):
 	def save(self, *args, **kwargs):
 		if not self.id:
 			self.slug = slugify(self.title)
-		super(Events, self).save(*args, **kwargs)
+		super(Event, self).save(*args, **kwargs)
 
 
 	def __str__(self):
